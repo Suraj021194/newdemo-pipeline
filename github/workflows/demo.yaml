@@ -1,0 +1,31 @@
+name: Python Build Workflow
+on:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/demo.yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Prod
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
+        env:
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: python app.py
+
+      - name: Conditional Deploy
+        if: github.ref == 'refs/heads/master'
+        run: echo "Deploying to production environment"
