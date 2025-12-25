@@ -1,4 +1,4 @@
-name: Multi-Environment Workflow
+name: Run Python script
 
 on:
   push:
@@ -50,3 +50,24 @@ jobs:
       - name: Deploy to Production
         if: github.ref == 'refs/heads/master'
         run: echo "Deploying to Production environment"
+
+      - name: Run Python script
+        env:
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          API_KEY: ${{ secrets.DEV_API_KEY }}
+        if: github.ref == 'refs/heads/dev'
+        run: python app.py
+
+      - name: Run Python script (Staging)
+        env:
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          API_KEY: ${{ secrets.STAGING_API_KEY }}
+        if: github.ref == refs/heads/staging'
+        run: python app.py
+
+      - name: Run Python script (Prod)
+        env:
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          API_KEY: ${{ secrets.PROD_API_KEY }}
+        if: github.ref == 'refs/heads/master'
+        run: python app.py
