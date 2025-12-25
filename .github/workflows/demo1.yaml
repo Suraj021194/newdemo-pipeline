@@ -1,0 +1,52 @@
+name: Multi-Environment Workflow
+
+on:
+  push:
+    branches: [dev, staging, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
+        env:
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: python app.py
+
+      # Conditional deploys per branch
+      - name: Deploy to Dev
+        if: github.ref == 'refs/heads/dev'
+        run: echo "Deploying to Dev environment"
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/hands/staging
+        run: echo "Deploying to Staging environment"
+
+      - name: Build Docker image (Prod only)
+        if: github.ref == 'refs/heads/master'
+        run: docker build -t suraj021194/myapp:${{ vars.APP_VERSION }} .
+
+      - name: Push Docker image (Prod only)
+        if: github.ref == 'refs/heads/master'
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+          docker push suraj021194/mapapp:${{ vars.APP_VERSION }}
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/master'
+        run: echo "Deploying to Production environment"
