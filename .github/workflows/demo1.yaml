@@ -32,7 +32,7 @@ jobs:
         run: echo "Deploying to Dev environment"
 
       - name: Deploy to Staging
-        if: github.ref == 'refs/hands/staging
+        if: github.ref == 'refs/heads/staging
         run: echo "Deploying to Staging environment"
 
       - name: Build Docker image (Prod only)
