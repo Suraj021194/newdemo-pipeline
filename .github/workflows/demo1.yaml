@@ -46,7 +46,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-          docker push suraj021194/mapapp:${{ vars.APP_VERSION }}
+          docker push suraj021194/myapp:${{ vars.APP_VERSION }}
       - name: Deploy to Production
         if: github.ref == 'refs/heads/master'
         run: echo "Deploying to Production environment"
