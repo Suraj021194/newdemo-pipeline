@@ -62,7 +62,7 @@ jobs:
         env:
           APP_VERSION: ${{ vars.APP_VERSION }}
           API_KEY: ${{ secrets.STAGING_API_KEY }}
-        if: github.ref == refs/heads/staging'
+        if: github.ref == 'refs/heads/staging'
         run: python app.py
 
       - name: Run Python script (Prod)
