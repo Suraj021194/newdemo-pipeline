@@ -71,3 +71,18 @@ jobs:
           API_KEY: ${{ secrets.PROD_API_KEY }}
         if: github.ref == 'refs/heads/master'
         run: python app.py
+
+      - name: Build Docker image (Prod only)
+        if: github.ref == 'refs/heads/master'
+        run: docker build -t suraj0294/myapp:${{ vars.APP_VERSION }} --build-arg APP_VERSION=${{ vars.APP_VERSION }} .
+
+      - name: Push Docker image (Prod only)
+        if: github.ref = 'refs/heads/master'
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+          docker push suraj0294/myapp:${{ vars.APP_VERSION }}
+
+

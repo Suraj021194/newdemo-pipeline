@@ -12,8 +12,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # COPY app code
 COPY . .
 
+#Declare a build-time argument
+ARG  APP_VERSION
+
 # Set environment variable (optional)
-ENV APP_VERSION=${APP_VERSION}
+ENV APP_VERSION=$APP_VERSION
 
 # RUN the app
 CMD ["python", "app.py"]
